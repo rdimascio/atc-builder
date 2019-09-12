@@ -11,7 +11,9 @@ const OUTPUT = `
 		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.2.3/dist/main.js";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'cb-jsclp'));
+
 	${displayOfferings()}
+
 	(function() {
 		setTimeout(() => {
 			window.CB && window.CB.buildLinks(offerings);
@@ -22,10 +24,10 @@ const OUTPUT = `
 `;
 
 function displayOfferings() {
-	let keyString = '';
+	let keyString = 'var offerings = {}';
 
 	if (url.search) {
-		keyString = '\n\tvar offerings = {\n';
+		keyString = 'var offerings = {\n';
 
 		const LINE_START = '\t\t';
 		const LINE_END = ',\n';
@@ -34,7 +36,7 @@ function displayOfferings() {
 			keyString += `${LINE_START}${key}: ${value}${LINE_END}`;
 		});
 
-		keyString += '\t}\n'
+		keyString += '\t}'
 	}
 
 	return keyString;
@@ -45,7 +47,6 @@ function addNewInputGroup() {
 
 	const PARENT = event.target.parentNode;
 	const NEW_GROUP = PARENT.cloneNode(true);
-	// PARENT.querySelector('.add').outerHTML = '';
 	NEW_GROUP.querySelector('.asin').value = '';
 	NEW_GROUP.querySelector('.offerID').value = '';
 	NEW_GROUP.querySelector('.add').addEventListener('click', addNewInputGroup);
