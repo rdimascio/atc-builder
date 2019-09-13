@@ -54,6 +54,13 @@ function displayAction() {
 	return actionString;
 }
 
+function removeInputGroup() {
+	event.preventDefault();
+
+	const PARENT = event.target.parentNode;
+	PARENT.remove();
+}
+
 function addNewInputGroup() {
 	event.preventDefault();
 
@@ -61,8 +68,11 @@ function addNewInputGroup() {
 	const NEW_GROUP = PARENT.cloneNode(true);
 	NEW_GROUP.querySelector('.asin').value = '';
 	NEW_GROUP.querySelector('.offerID').value = '';
-	NEW_GROUP.querySelector('.add').addEventListener('click', addNewInputGroup);
 	document.querySelector('.input-groups').appendChild(NEW_GROUP);
+
+	event.target.removeEventListener('click', addNewInputGroup);
+	event.target.addEventListener('click', removeInputGroup);
+	NEW_GROUP.querySelector('.add').addEventListener('click', addNewInputGroup);
 }
 
 function addInputsToOfferings() {
@@ -110,7 +120,7 @@ function populateInputGroups() {
 						Offering ID
 						<input name="offerID" class="offerID" type="text" placeholder="1zSBzzHPQPIi75K7G1p5BST6KdcGV%2BvnMiOqMPbXi85AsstG%2BW32t7U2hTKS4eowhLRAFhob8cWXh%2F5Ps%2Fy8T9N%2B9pkatlr3u9w7Av5dWkRVwo1IE1jXsD3SxabgMYkVZslKVLHOqNdbtEcbowdtkQ%3D%3D" value="${value}" />
 					</label>
-					<a class="add" href="#">&plus;</a>
+					<a class="add" href="#"></a>
 				</div>
 			`;
 		})
@@ -144,7 +154,7 @@ function addEventListeners() {
 		window.location.href = url.href;
 	});
 
-	document.querySelector('.input-group:last-child .add').addEventListener('click', addNewInputGroup);
+	document.querySelector('.input-group .add').addEventListener('click', addNewInputGroup);
 }
 
 (function() {
