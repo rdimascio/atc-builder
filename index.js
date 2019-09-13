@@ -8,7 +8,7 @@ const OUTPUT = `
 		if (d.getElementById(id)) {return;}
 		js = d.createElement(s); js.id = id;
 		js.async = true; js.defer = true;
-		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.2.3/dist/main.js";
+		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.1/dist/main.js";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'cb-jsclp'));
 
@@ -16,7 +16,7 @@ const OUTPUT = `
 
 	(function() {
 		setTimeout(() => {
-			window.CB && window.CB.buildLinks(offerings);
+			window.CB && window.CB.init(offerings);
 		}, 1000)
 	}());
 &lt;/script&gt;
