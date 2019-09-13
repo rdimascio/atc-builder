@@ -8,15 +8,16 @@ const OUTPUT = `
 		if (d.getElementById(id)) {return;}
 		js = d.createElement(s); js.id = id;
 		js.async = true; js.defer = true;
-		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.1/dist/main.js";
+		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc/dist/main.js";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'cb-jsclp'));
 
-	${displayOfferings()}
-
 	(function(w) {
 		setTimeout(() => {
-			w.CB && w.CB.init(offerings);
+			if (!w.CB) {return;}
+			${displayOfferings()}
+			${displayAction()}
+			w.CB.init();
 		}, 1000)
 	}(window));
 &lt;/script&gt;
@@ -24,22 +25,33 @@ const OUTPUT = `
 `;
 
 function displayOfferings() {
-	let keyString = 'var offerings = {}';
+	let keyString = 'w.CB.offerings = {}';
 
 	if (url.search) {
-		keyString = 'var offerings = {\n';
+		keyString = 'w.CB.offerings = {\n';
 
-		const LINE_START = '\t\t';
+		const LINE_START = '\t\t\t\t';
 		const LINE_END = ',\n';
 
 		url.searchParams.forEach((value, key) => {
 			keyString += `${LINE_START}${key}: ${value}${LINE_END}`;
 		});
 
-		keyString += '\t}'
+		keyString += '\t\t\t}'
 	}
 
 	return keyString;
+}
+
+function displayAction() {
+	let actionString = 'w.CB.action = "window"';
+
+	if (window.location.hash) {
+		let action = window.location.hash.split('#')[1];
+		actionString = `w.CB.action = "${action}"`;
+	}
+
+	return actionString;
 }
 
 function addNewInputGroup() {
@@ -102,6 +114,12 @@ function populateInputGroups() {
 	return false;
 }
 
+function populateSelectField() {
+	if (window.location.hash) {
+		document.querySelector('.select select').value = window.location.hash.split('#')[1]
+	}
+}
+
 function addEventListeners() {
 	document.querySelector('#submitBtn').addEventListener('click', () => {
 		event.preventDefault();
@@ -117,8 +135,15 @@ function addEventListeners() {
 		event.preventDefault();
 
 		url.search = '';
+		url.hash = '';
 		window.location.href = url.href;
 	});
+	
+	document.querySelector('.select select').addEventListener('change', () => {
+		url.hash = event.target.value;
+		window.location.href = url.href;
+		window.location.reload();
+	})
 
 	document.querySelector('.input-group:last-child .add').addEventListener('click', addNewInputGroup);
 }
@@ -126,5 +151,6 @@ function addEventListeners() {
 (function() {
 	generateOutputCode();
 	populateInputGroups();
+	populateSelectField();
 	addEventListeners();
 }());

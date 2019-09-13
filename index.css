@@ -12,6 +12,14 @@ body.app {
 	text-align: center;
 }
 
+.select {
+	margin-top: 40px;
+}
+
+.select select {
+	margin-left: 10px;
+}
+
 .input-group {
 	margin-top: 40px;
 	position: relative;
