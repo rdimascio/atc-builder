@@ -8,7 +8,7 @@ const OUTPUT = `
 		if (d.getElementById(id)) {return;}
 		js = d.createElement(s); js.id = id;
 		js.async = true; js.defer = true;
-		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.6/dist/main.js";
+		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.7/dist/main.js";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'cb-jsclp'));
 
