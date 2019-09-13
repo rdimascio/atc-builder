@@ -8,7 +8,7 @@ const OUTPUT = `
 		if (d.getElementById(id)) {return;}
 		js = d.createElement(s); js.id = id;
 		js.async = true; js.defer = true;
-		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc/dist/main.js";
+		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.6/dist/main.js";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'cb-jsclp'));
 
@@ -34,7 +34,7 @@ function displayOfferings() {
 		const LINE_END = ',\n';
 
 		url.searchParams.forEach((value, key) => {
-			keyString += `${LINE_START}${key}: ${value}${LINE_END}`;
+			keyString += `${LINE_START}'${key}': '${value}'${LINE_END}`;
 		});
 
 		keyString += '\t\t\t}'
@@ -66,6 +66,8 @@ function addNewInputGroup() {
 }
 
 function addInputsToOfferings() {
+	url.search = '';
+
 	const INPUT_GROUPS = document.querySelectorAll('.input-group');
 	[...INPUT_GROUPS].map(form => {
 		const ASIN = form.querySelector('.asin').value;
@@ -75,6 +77,9 @@ function addInputsToOfferings() {
 			url.searchParams.set(ASIN, OFFER_ID);
 		}
 	});
+
+	let actionValue = document.querySelector('.select select').value;
+	url.hash = actionValue;
 
 	return url.href;
 }
@@ -138,12 +143,6 @@ function addEventListeners() {
 		url.hash = '';
 		window.location.href = url.href;
 	});
-	
-	document.querySelector('.select select').addEventListener('change', () => {
-		url.hash = event.target.value;
-		window.location.href = url.href;
-		window.location.reload();
-	})
 
 	document.querySelector('.input-group:last-child .add').addEventListener('click', addNewInputGroup);
 }
