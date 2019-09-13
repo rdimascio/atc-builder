@@ -14,11 +14,11 @@ const OUTPUT = `
 
 	${displayOfferings()}
 
-	(function() {
+	(function(w) {
 		setTimeout(() => {
-			window.CB && window.CB.init(offerings);
+			w.CB && w.CB.init(offerings);
 		}, 1000)
-	}());
+	}(window));
 &lt;/script&gt;
 </pre>
 `;
