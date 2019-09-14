@@ -1,4 +1,8 @@
-body.app {
+body {
+    tab-size: 2;
+}
+
+.app {
 	display: flex;
 	flex-direction: column;
 	width: 100%;

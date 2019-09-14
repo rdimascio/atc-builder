@@ -25,19 +25,26 @@ const OUTPUT = `
 `;
 
 function displayOfferings() {
-	let keyString = 'w.CB.offerings = {}';
+	let keyString = 'w.CB.offerings = []';
 
-	if (url.search) {
-		keyString = 'w.CB.offerings = {\n';
+	if (url.searchParams.has('offering')) {
+		keyString = 'w.CB.offerings = [';
 
-		const LINE_START = '\t\t\t\t';
-		const LINE_END = ',\n';
+		const OFFERINGS = url.searchParams.getAll('offering');
 
-		url.searchParams.forEach((value, key) => {
-			keyString += `${LINE_START}'${key}': '${value}'${LINE_END}`;
+		OFFERINGS.map(offer => {
+			offer = decodeURIComponent(offer);
+			offer = JSON.parse(offer);
+
+			keyString += `
+				{
+					asin: '${offer.asin}',
+					offeringID: '${offer.offeringID}',
+					price: '${offer.price}'
+				},`;
 		});
 
-		keyString += '\t\t\t}'
+		keyString += '\n\t\t\t]'
 	}
 
 	return keyString;
@@ -46,28 +53,29 @@ function displayOfferings() {
 function displayAction() {
 	let actionString = 'w.CB.action = "window"';
 
-	if (window.location.hash) {
-		let action = window.location.hash.split('#')[1];
+	if (url.searchParams.has('action')) {
+		let action = url.searchParams.get('action');
 		actionString = `w.CB.action = "${action}"`;
 	}
 
 	return actionString;
 }
 
-function removeInputGroup() {
+const removeInputGroup = () => {
 	event.preventDefault();
 
 	const PARENT = event.target.parentNode;
 	PARENT.remove();
 }
 
-function addNewInputGroup() {
+const addNewInputGroup = () => {
 	event.preventDefault();
 
 	const PARENT = event.target.parentNode;
 	const NEW_GROUP = PARENT.cloneNode(true);
 	NEW_GROUP.querySelector('.asin').value = '';
 	NEW_GROUP.querySelector('.offerID').value = '';
+	NEW_GROUP.querySelector('.price').value = '';
 	document.querySelector('.input-groups').appendChild(NEW_GROUP);
 
 	event.target.removeEventListener('click', addNewInputGroup);
@@ -75,50 +83,61 @@ function addNewInputGroup() {
 	NEW_GROUP.querySelector('.add').addEventListener('click', addNewInputGroup);
 }
 
-function addInputsToOfferings() {
+const addInputsToOfferings = () => {
 	url.search = '';
 
 	const INPUT_GROUPS = document.querySelectorAll('.input-group');
 	[...INPUT_GROUPS].map(form => {
+		let offering = {};
 		const ASIN = form.querySelector('.asin').value;
 		const OFFER_ID = form.querySelector('.offerID').value;
+		const PRICE = form.querySelector('.price').value;
 
-		if (ASIN && OFFER_ID) {
-			url.searchParams.set(ASIN, OFFER_ID);
+		if (ASIN && OFFER_ID && PRICE) {
+			offering.asin = ASIN;
+			offering.offeringID = OFFER_ID;
+			offering.price = PRICE;
+
+			offering = JSON.stringify(offering);
+			offering = encodeURIComponent(offering);
+
+			url.searchParams.append('offering', offering);
 		}
 	});
 
 	let actionValue = document.querySelector('.select select').value;
-	url.hash = actionValue;
+	url.searchParams.set('action', actionValue);
 
 	return url.href;
 }
 
-function generateOutputCode() {
+const generateOutputCode = () => {
 	document.body.querySelector('.output').innerHTML = OUTPUT;
 }
 
-function populateInputGroups() {
+const populateInputGroups = () => {
 	if (window.location.search) {
-		let urlKeys = window.location.search.split('?')[1].split('&');
+		let offerings = url.searchParams.getAll('offering')
 
 		document.querySelector('.input-groups').innerHTML = '';
 	
-		urlKeys.forEach(entry => {
-			entry = entry.split('=');
-	
-			let key = entry[0];
-			let value = entry[1];
+		offerings.map(offer => {
+			offer = decodeURIComponent(offer);
+			offer = JSON.parse(offer);
 	
 			document.querySelector('.input-groups').innerHTML += `
 				<div class="input-group">
 					<label for="asin">
 						ASIN
-						<input name="asin" class="asin" type="text" placeholder="B07PQ97CRW" value="${key}" />
+						<input name="asin" class="asin" type="text" placeholder="B07PQ97CRW" value="${offer.asin}" />
 					</label>
 					<label for="offerID">
 						Offering ID
-						<input name="offerID" class="offerID" type="text" placeholder="1zSBzzHPQPIi75K7G1p5BST6KdcGV%2BvnMiOqMPbXi85AsstG%2BW32t7U2hTKS4eowhLRAFhob8cWXh%2F5Ps%2Fy8T9N%2B9pkatlr3u9w7Av5dWkRVwo1IE1jXsD3SxabgMYkVZslKVLHOqNdbtEcbowdtkQ%3D%3D" value="${value}" />
+						<input name="offerID" class="offerID" type="text" placeholder="1zSBzzHPQPIi75K7G1p5BST6KdcGV%2BvnMiOqMPbXi85AsstG%2BW32t7U2hTKS4eowhLRAFhob8cWXh%2F5Ps%2Fy8T9N%2B9pkatlr3u9w7Av5dWkRVwo1IE1jXsD3SxabgMYkVZslKVLHOqNdbtEcbowdtkQ%3D%3D" value="${offer.offeringID}" />
+					</label>
+					<label for="price">
+						Price
+						<input name="price" class="price" type="text" placeholder="45.99" value="${offer.price}" />
 					</label>
 					<a class="add" href="#"></a>
 				</div>
@@ -129,13 +148,13 @@ function populateInputGroups() {
 	return false;
 }
 
-function populateSelectField() {
-	if (window.location.hash) {
-		document.querySelector('.select select').value = window.location.hash.split('#')[1]
+const populateSelectField = () => {
+	if (url.searchParams.has('action')) {
+		document.querySelector('.select select').value = url.searchParams.get('action');
 	}
 }
 
-function addEventListeners() {
+const addEventListeners = () => {
 	document.querySelector('#submitBtn').addEventListener('click', () => {
 		event.preventDefault();
 
@@ -150,16 +169,20 @@ function addEventListeners() {
 		event.preventDefault();
 
 		url.search = '';
-		url.hash = '';
 		window.location.href = url.href;
 	});
 
-	document.querySelector('.input-group .add').addEventListener('click', addNewInputGroup);
+	document.querySelector('.input-group:last-child .add').addEventListener('click', addNewInputGroup);
+	document.querySelector('.input-group:not(:last-child) .add').addEventListener('click', removeInputGroup);
 }
 
-(function() {
+const init = () => {
 	generateOutputCode();
 	populateInputGroups();
 	populateSelectField();
 	addEventListeners();
+}
+
+(function() {
+	init();
 }());
