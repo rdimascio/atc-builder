@@ -8,7 +8,7 @@ const OUTPUT = `
 		if (d.getElementById(id)) {return;}
 		js = d.createElement(s); js.id = id;
 		js.async = true; js.defer = true;
-		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.8/dist/main.js";
+		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.4/dist/main.js";
 		cbjs.parentNode.insertBefore(js, cbjs);
 	}(document, 'script', 'cb-js'));
 
@@ -16,7 +16,7 @@ const OUTPUT = `
 		var css, cbcss = d.getElementsByTagName(l)[0];
 		if (d.getElementById(id)) {return;}
 		css = d.createElement(l); css.id = id;
-		css.href = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.3.8/dist/main.css";
+		css.href = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.4/dist/main.css";
 		cbcss.parentNode.insertBefore(css, cbcss);
 	}(document, 'link', 'cb-css'));
 
