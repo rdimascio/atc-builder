@@ -3,36 +3,36 @@ let url = new URL(window.location);
 const OUTPUT = `
 <pre class="prettyprint linenums lang-js">
 &lt;script type="text/javascript"&gt;
-	(function() {
-		if (window.location.host === "advertising.amazon.com") {return;}
+	(function(d, w, h, s, l, jsid, cssid) {
+		if (h === "advertising.amazon.com") {return;}
 
-		(function(d, s, id){
-			var js, cbjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) {return;}
-			js = d.createElement(s); js.id = id;
-			js.async = true; js.defer = true;
-			js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.6.1/dist/main.js";
-			cbjs.parentNode.insertBefore(js, cbjs);
-		}(document, 'script', 'cb-js'));
+		var js, jsdlvr, cbjs = d.getElementsByTagName(s)[0];
+		var css, cbcss = d.getElementsByTagName(l)[0];
+
+		jsdlvr = d.createElement(l);
+		jsdlvr.setAttribute("rel", "dns-prefetch preconnect");
+		jsdlvr.href = "https://cdn.jsdelivr.net";
+		cbjs.parentNode.insertBefore(jsdlvr, cbjs);
+
+		if (d.getElementById(jsid)) {return;}
+		js = d.createElement(s); js.id = jsid;
+		js.async = true; js.defer = true;
+		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.7/dist/main.js";
+		cbjs.parentNode.insertBefore(js, cbjs);
 	
-		(function(d, l, id){
-			var css, cbcss = d.getElementsByTagName(l)[0];
-			if (d.getElementById(id)) {return;}
-			css = d.createElement(l); css.id = id;
-			css.setAttribute("rel", "stylesheet");
-			css.href = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.6.1/dist/main.css";
-			cbcss.parentNode.insertBefore(css, cbcss);
-		}(document, 'link', 'cb-css'));
+		if (d.getElementById(cssid)) {return;}
+		css = d.createElement(l); css.id = cssid;
+		css.setAttribute("rel", "stylesheet");
+		css.href = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.7/dist/main.css";
+		cbcss.parentNode.insertBefore(css, cbcss);
 	
-		(function(w) {
-			setTimeout(() => {
-				if (!w.CB) {return;}
-				${displayOfferings()}
-				${displayAction()}
-				w.CB.init();
-			}, 500)
-		}(window));
-	}());
+		setTimeout(() => {
+			if (!w.CB) {return;}
+			${displayOfferings()}
+			${displayAction()}
+			w.CB.init();
+		}, 500);
+	}(document, window, window.location.host, 'script', 'link', 'cb-js', 'cb-css'));
 &lt;/script&gt;
 </pre>
 `;
