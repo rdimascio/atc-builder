@@ -3,33 +3,36 @@ let url = new URL(window.location);
 const OUTPUT = `
 <pre class="prettyprint linenums lang-js">
 &lt;script type="text/javascript"&gt;
-	(function(d, s, id){
-		var js, cbjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) {return;}
-		js = d.createElement(s); js.id = id;
-		js.async = true; js.defer = true;
-		js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.6.1/dist/main.js";
-		cbjs.parentNode.insertBefore(js, cbjs);
-	}(document, 'script', 'cb-js'));
+	(function() {
+		if (window.location.host === "advertising.amazon.com") {return;}
 
-	(function(d, l, id){
-		var css, cbcss = d.getElementsByTagName(l)[0];
-		if (d.getElementById(id)) {return;}
-		css = d.createElement(l); css.id = id;
-		css.setAttribute("rel", "stylesheet");
-		css.href = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.6.1/dist/main.css";
-		cbcss.parentNode.insertBefore(css, cbcss);
-	}(document, 'link', 'cb-css'));
-
-	(function(w) {
-		if (w.location.host === "advertising.amazon.com") {return;}
-		setTimeout(() => {
-			if (!w.CB) {return;}
-			${displayOfferings()}
-			${displayAction()}
-			w.CB.init();
-		}, 100)
-	}(window));
+		(function(d, s, id){
+			var js, cbjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.async = true; js.defer = true;
+			js.src = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.6.1/dist/main.js";
+			cbjs.parentNode.insertBefore(js, cbjs);
+		}(document, 'script', 'cb-js'));
+	
+		(function(d, l, id){
+			var css, cbcss = d.getElementsByTagName(l)[0];
+			if (d.getElementById(id)) {return;}
+			css = d.createElement(l); css.id = id;
+			css.setAttribute("rel", "stylesheet");
+			css.href = "https://cdn.jsdelivr.net/gh/rdimascio/atc@1.6.1/dist/main.css";
+			cbcss.parentNode.insertBefore(css, cbcss);
+		}(document, 'link', 'cb-css'));
+	
+		(function(w) {
+			setTimeout(() => {
+				if (!w.CB) {return;}
+				${displayOfferings()}
+				${displayAction()}
+				w.CB.init();
+			}, 500)
+		}(window));
+	}());
 &lt;/script&gt;
 </pre>
 `;
