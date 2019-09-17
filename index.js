@@ -56,8 +56,7 @@ function displayOfferings() {
 			keyString += `
 				{
 					asin: '${offer.asin}',
-					offeringID: '${offer.offeringID}',
-					price: '${offer.price}'
+					offeringID: '${offer.offeringID}'
 				},`;
 		});
 
@@ -92,7 +91,6 @@ const addNewInputGroup = () => {
 	const NEW_GROUP = PARENT.cloneNode(true);
 	NEW_GROUP.querySelector('.asin').value = '';
 	NEW_GROUP.querySelector('.offerID').value = '';
-	NEW_GROUP.querySelector('.price').value = '';
 	document.querySelector('.input-groups').appendChild(NEW_GROUP);
 
 	event.target.removeEventListener('click', addNewInputGroup);
@@ -108,12 +106,10 @@ const addInputsToOfferings = () => {
 		let offering = {};
 		const ASIN = form.querySelector('.asin').value;
 		const OFFER_ID = form.querySelector('.offerID').value;
-		const PRICE = form.querySelector('.price').value;
 
-		if (ASIN && OFFER_ID && PRICE) {
+		if (ASIN && OFFER_ID) {
 			offering.asin = ASIN;
 			offering.offeringID = OFFER_ID;
-			offering.price = PRICE;
 
 			offering = JSON.stringify(offering);
 			offering = encodeURIComponent(offering);
@@ -151,10 +147,6 @@ const populateInputGroups = () => {
 					<label for="offerID">
 						Offering ID
 						<input name="offerID" class="offerID" type="text" placeholder="1zSBzzHPQPIi75K7G1p5BST6KdcGV%2BvnMiOqMPbXi85AsstG%2BW32t7U2hTKS4eowhLRAFhob8cWXh%2F5Ps%2Fy8T9N%2B9pkatlr3u9w7Av5dWkRVwo1IE1jXsD3SxabgMYkVZslKVLHOqNdbtEcbowdtkQ%3D%3D" value="${offer.offeringID}" />
-					</label>
-					<label for="price">
-						Price
-						<input name="price" class="price" type="text" placeholder="45.99" value="${offer.price}" />
 					</label>
 					<a class="add" href="#"></a>
 				</div>
