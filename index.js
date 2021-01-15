@@ -2,42 +2,37 @@ let url = new URL(window.location);
 
 const OUTPUT = `
 <pre class="prettyprint linenums lang-js">
+// Freeform #1
 &lt;script type="text/javascript"&gt;
-	(function() {
-		if (window.location.host === "advertising.amazon.com") {return;}
+	(function(w) {
+		if (w.CB && w.CB.offerings.length && w.CB.action) {return;}
+		var CB = {}
+		w.CB = CB
 
-		(function(d, s, id){
-			var js, jsdlvr, cbjs = d.getElementsByTagName(s)[0];
-			jsdlvr = d.createElement('link');
-			jsdlvr.setAttribute("rel", "dns-prefetch preconnect");
-			jsdlvr.href = "https://cdn.jsdelivr.net";
-			cbjs.parentNode.insertBefore(jsdlvr, cbjs);
-			if (d.getElementById(id)) {return;}
-			js = d.createElement(s); js.id = id;
-			js.async = true; js.defer = true;
-			js.src = "https://cdn.jsdelivr.net/gh/Channel-Bakers/amazon-add-to-cart@1.0.0/dist/main.js";
-			cbjs.parentNode.insertBefore(js, cbjs);
-		}(document, 'script', 'cb-js'));
-	
-		(function(d, l, id){
-			var css, cbcss = d.getElementsByTagName(l)[0];
-			if (d.getElementById(id)) {return;}
-			css = d.createElement(l); css.id = id;
-			css.setAttribute("rel", "stylesheet");
-			css.href = "https://cdn.jsdelivr.net/gh/Channel-Bakers/amazon-add-to-cart@1.0.0/dist/main.css";
-			cbcss.parentNode.insertBefore(css, cbcss);
-		}(document, 'link', 'cb-css'));
-	
-		(function(w) {
-			setTimeout(() => {
-				if (!w.CB) {return;}
-				${displayOfferings()}
-				${displayAction()}
-				w.CB.init();
-			}, 500)
-		}(window));
-	}());
+		${displayOfferings()}
+
+		if (!w.CB.action) {
+			${displayAction()}
+		}
+	}(window));
 &lt;/script&gt;
+
+// Freeform #2
+&lt;script type="text/javascript"&gt;
+(function(d, s, id){
+  var jsdlvr, ajs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  jsdlvr = d.createElement('link');
+  jsdlvr.setAttribute("rel", "dns-prefetch preconnect");
+  jsdlvr.href = "https://cdn.jsdelivr.net";
+  ajs.parentNode.insertBefore(jsdlvr, ajs);
+}(document, 'script', 'jsdelivr'));
+&lt;/script&gt;
+
+&lt;script id="cbjs" type="text/javascript" src="https://cdn.jsdelivr.net/gh/Channel-Bakers/amazon-add-to-cart@1.0.0/dist/main.min.js"&gt;&lt;/script&gt;
+
+// Freeform #3 (use server side rendering)
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Channel-Bakers/amazon-add-to-cart@1.0.0/dist/main.css"&gt;
 </pre>
 `;
 
@@ -67,7 +62,7 @@ function displayOfferings() {
 }
 
 function displayAction() {
-	let actionString = 'w.CB.action = "window"';
+	let actionString = 'w.CB.action = "background"';
 
 	if (url.searchParams.has('action')) {
 		let action = url.searchParams.get('action');
@@ -77,14 +72,14 @@ function displayAction() {
 	return actionString;
 }
 
-const removeInputGroup = () => {
+const removeInputGroup = (event) => {
 	event.preventDefault();
 
 	const PARENT = event.target.parentNode;
 	PARENT.remove();
 }
 
-const addNewInputGroup = () => {
+const addNewInputGroup = (event) => {
 	event.preventDefault();
 
 	const PARENT = event.target.parentNode;
@@ -164,7 +159,7 @@ const populateSelectField = () => {
 }
 
 const addEventListeners = () => {
-	document.querySelector('#submitBtn').addEventListener('click', () => {
+	document.querySelector('#submitBtn').addEventListener('click', (event) => {
 		event.preventDefault();
 
 		let newUrl = addInputsToOfferings();
@@ -174,7 +169,7 @@ const addEventListeners = () => {
 		}
 	});
 
-	document.querySelector('#clearBtn').addEventListener('click', () => {
+	document.querySelector('#clearBtn').addEventListener('click', (event) => {
 		event.preventDefault();
 
 		url.search = '';

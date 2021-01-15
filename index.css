@@ -2,6 +2,20 @@ body {
     tab-size: 2;
 }
 
+.linked-image-url p {
+	padding: 20px 40px;
+	margin: 20px 40px;
+	background: rgb(199, 136, 241);
+	color: #fff;
+	border-radius: 5px;
+	border: 2px solid rgb(82, 45, 107);
+}
+
+.linked-image-url p span {
+	font-weight: 700;
+	color: rgb(82, 45, 107);
+}
+
 .app {
 	display: flex;
 	flex-direction: column;
